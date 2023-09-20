@@ -72,7 +72,9 @@ const StackedBarChart = () => {
 			.attr("x", (d) => x(d.data.category))
 			.attr("y", (d) => (d[1] < 0 ? y(0) : y(d[1])))
 			.attr("height", (d) => Math.abs(y(d[0]) - y(d[1])))
-			.attr("width", x.bandwidth());
+			.attr("width", x.bandwidth())
+			.on("mouseenter", onMouseEnter)
+			.on("mouseleave", onMouseLeave);
 
 		// Add the y-axis, remove the domain line, add grid lines and a label.
 		svg.append("g")
@@ -108,7 +110,7 @@ const StackedBarChart = () => {
 			.data(["New MRR", "Expansion", "Contraction"])
 			.enter()
 			.append("g")
-			.attr("class", "legend-item")
+			.attr("className", "legend-item")
 			.attr("transform", (_, i) => `translate(${i * 100}, 0)`);
 
 		legendItems
@@ -125,6 +127,37 @@ const StackedBarChart = () => {
 			.text((d) => d)
 			.style("font-size", "12px")
 			.attr("fill", "#303030");
+
+		const tooltip = d3.select("#tooltip-stacked-bar");
+		const yAccessor = (d) => Math.abs(d.data.newMRR + d.data.expansion);
+		function onMouseEnter(_, data) {
+			tooltip.select("#mrr").text("New MRR: " + data.data.newMRR);
+			tooltip
+				.select("#expansion")
+				.text("Expansion: " + data.data.expansion);
+			tooltip
+				.select("#contraction")
+				.text("Contraction: " + data.data.contraction);
+
+			const xTooltip = x(data.data.category);
+			const yTooltip = y(yAccessor(data)) + dms.marginTop;
+
+			console.log(data.data.newMrr, data[1]);
+
+			tooltip.style(
+				"transform",
+				`translate(` +
+					`calc( -133% + ${xTooltip}px),` +
+					`calc( -112% + ${yTooltip}px)` +
+					`)`
+			);
+
+			tooltip.style("opacity", 1);
+		}
+
+		function onMouseLeave() {
+			tooltip.style("opacity", 0);
+		}
 	}, [data, dms]);
 
 	return (
@@ -138,6 +171,26 @@ const StackedBarChart = () => {
 			}}
 		>
 			<svg ref={svgRef}></svg>
+			<div
+				id="tooltip-stacked-bar"
+				style={{
+					position: "absolute",
+					background: "rgba(0, 0, 0, 0.7)",
+					color: "#fff",
+					borderRadius: "4px",
+					padding: "0.6em 1em",
+					boxShadow:
+						"0 6px 8px rgba(52, 73, 94, .2), 0 1px 1px rgba(52, 73, 94, 0.1)",
+					zIndex: 10,
+					transition: "all 0.2s ease-out",
+					pointerEvents: "none",
+					opacity: 0,
+				}}
+			>
+				<div className="tooltip-mrr" id="mrr"></div>
+				<div className="tooltip-expansion" id="expansion"></div>
+				<div className="tooltip-contraction" id="contraction"></div>
+			</div>
 		</div>
 	);
 };

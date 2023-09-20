@@ -105,8 +105,22 @@ const LineChart = () => {
 		svg.append("path")
 			.attr("fill", "none")
 			.attr("stroke", "#333357")
-			.attr("stroke-width", 1.5)
+			.attr("stroke-width", 0.8)
 			.attr("d", line(data));
+
+		const tooltip = d3.select("#tooltip-line");
+		// Add event listeners to show/hide the tooltip
+		svg.selectAll("circle")
+			.on("mouseover", (event, d) => {
+				tooltip.transition().duration(200).style("opacity", 0.9);
+				tooltip
+					.html(`Date: ${d.date}<br/>Value: ${d.value}`)
+					.style("left", event.pageX + "px")
+					.style("top", event.pageY - 28 + "px");
+			})
+			.on("mouseout", () => {
+				tooltip.transition().duration(500).style("opacity", 0);
+			});
 	}, [dms, data]);
 
 	return (
@@ -120,6 +134,19 @@ const LineChart = () => {
 			}}
 		>
 			<svg ref={svgRef}></svg>
+			<div
+				id="tooltip-line"
+				style={{
+					position: "absolute",
+					textAlign: "center",
+					padding: "8px",
+					fontSize: "14px",
+					background: "rgba(0, 0, 0, 0.7)",
+					color: "#fff",
+					borderRadius: "4px",
+					pointerEvents: "none",
+				}}
+			></div>
 		</div>
 	);
 };

@@ -53,7 +53,7 @@ const HorizontalBarChart = () => {
 			.attr("x", (d) => x(d.value) - 15) // Adjust distance from the end of the bar
 			.attr("y", (d) => y(d.category) + y.bandwidth() / 2)
 			.attr("dy", "0.35em")
-			.text((d) => `${d.value}%`);
+			.text((d) => `${d.value}K`);
 
 		svg.append("g")
 			.attr("transform", `translate(${x(0)},0)`)

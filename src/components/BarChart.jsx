@@ -7,8 +7,18 @@ const BarChart = () => {
 	const svgRef = useRef(null);
 
 	const [data] = useState([
-		{channel: "Paid", value: "38", color: "#EAF2F8"},
-		{channel: "Organic", value: "62", color: "#FC497F"},
+		{
+			channel: "Paid",
+			value: "16434",
+			percentage: "38",
+			color: "#EAF2F8",
+		},
+		{
+			channel: "Organic",
+			value: "26769",
+			percentage: "62",
+			color: "#FC497F",
+		},
 	]);
 
 	useEffect(() => {
@@ -68,7 +78,7 @@ const BarChart = () => {
 			.selectAll()
 			.data(data)
 			.join("text")
-			.text((d) => `${d.value}%`)
+			.text((d) => `${d.percentage}% - ${d.value}`)
 			.attr("x", (d) => x(d.channel) + x.bandwidth() / 2)
 			.attr("y", (d) => y(parseInt(d.value)) - 5) // Adjust the vertical position
 			.attr("text-anchor", "middle")
