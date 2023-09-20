@@ -145,6 +145,7 @@ const LineChart = () => {
 					color: "#fff",
 					borderRadius: "4px",
 					pointerEvents: "none",
+					opacity: 0,
 				}}
 			></div>
 		</div>
